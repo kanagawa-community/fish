@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency: release
+
+jobs:
+  release:
+    # The template repository itself is never released.
+    if: github.repository != 'kanagawa-community/template'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: cocogitto/cocogitto-action@52d0023b4396897f1815648e553db2ab8d782f3a # v4.2.0
+        with:
+          install-only: true
+
+      - name: Tag and publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Without a baseline tag cog would release 0.1.0 from the whole history.
+          # The baseline is created when the port is adopted.
+          if [ -z "$(git tag --list)" ]; then
+            echo "No baseline tag yet, so no release is made."
+            exit 0
+          fi
+
+          # A re-run after a release finds HEAD already on the new tag, where cog
+          # reports an error instead of "nothing to do".
+          if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
+            echo "HEAD is already tagged, so there is nothing to release."
+            exit 0
+          fi
+
+          # A cog error must fail the job instead of looking like "nothing to do".
+          if ! out="$(cog bump --auto --dry-run 2>&1)"; then
+            echo "$out"
+            exit 1
+          fi
+          next="$(printf '%s\n' "$out" | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | head -n1 || true)"
+          if [ -z "$next" ]; then
+            echo "No commits since the last tag require a new version."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cog bump --auto
+          git push origin "refs/tags/$next"
+          gh release create "$next" --title "$next" --notes "$(cog changelog --at "$next")"
