@@ -37,8 +37,8 @@ the mapping. To try a change, copy the files to `~/.config/fish/themes/` and run
 
 The images in `assets/screenshots/` are rendered, not captured by hand. After
 changing a theme, run `scripts/render-previews.sh` and commit the new images. It
-needs `fish`, `tmux`, `eza`, [freeze](https://github.com/charmbracelet/freeze)
-and the FiraCode Nerd Font. See the
+needs `fish`, `tmux`, `eza`, `rsync`, `rsvg-convert`,
+[termframe](https://github.com/pamburus/termframe) and the FiraCode Nerd Font. See the
 [preview standard](https://github.com/kanagawa-community/.github/blob/main/PREVIEWS.md).
 
 ## Pull requests

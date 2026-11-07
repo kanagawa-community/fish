@@ -2,10 +2,12 @@
 # Render assets/screenshots/<variant>.png from a real fish session.
 #
 # fish runs in a headless tmux pane with each theme applied. The script types a
-# short session, captures the pane with its colors, recolors the 16 terminal
-# colors from the shared palette and renders the result with freeze.
+# short session and captures the pane with its colors. termframe then renders
+# the capture with a theme built from the shared palette (background, foreground
+# and the 16 terminal colors), and rsvg-convert turns the SVG into a PNG.
 #
-# Requires: fish, tmux, eza, freeze, rsync, python3, curl, and the FiraCode Nerd Font.
+# Requires: fish, tmux, eza, termframe, rsvg-convert, rsync, python3, curl, and
+# the FiraCode Nerd Font.
 # Follows https://github.com/kanagawa-community/.github/blob/main/PREVIEWS.md
 set -euo pipefail
 
@@ -34,12 +36,10 @@ send() {
 }
 
 for variant in wave dragon lotus; do
-  bg=$(python3 -I - "$work/palette.json" "$variant" <<'PY'
-import json, sys
-colors = json.load(open(sys.argv[1]))["variants"][sys.argv[2]]["colors"]
-print(next(c["hex"] for c in colors.values() if "ui.bg" in c["usage"]))
-PY
-)
+  mkdir -p "$work/tf/termframe/themes"
+  python3 -I "$root/scripts/termframe-theme.py" "$work/palette.json" "$variant" \
+    >"$work/tf/termframe/themes/kanagawa-$variant.toml"
+  mode=dark; [[ $variant == lotus ]] && mode=light
   tmux -L kanagawa-preview kill-server 2>/dev/null || true
   tmux -L kanagawa-preview new-session -d -s s -x 100 -y 22 -c "$work/home" \
     -e XDG_CONFIG_HOME="$work/xdg" -e HOME="$work/home" -e COLORTERM=truecolor \
@@ -51,9 +51,13 @@ PY
   send 'eza -alF --icons --group-directories-first --no-user'
   send 'nosuchcommand --flag' noenter
   tmux -L kanagawa-preview capture-pane -p -e -t s \
-    | python3 -I "$root/scripts/ansi16.py" "$work/palette.json" "$variant" \
     | sed -e :a -e '/^[[:space:]]*$/{$d;N;ba' -e '}' >"$work/$variant.ansi"
-  freeze --language ansi --background "$bg" --padding 24 --margin 0 --window=false \
-    --border.radius 0 --font.family "$font" --font.size 16 --line-height 1.4 \
-    --output "$root/assets/screenshots/$variant.png" <"$work/$variant.ansi"
+  cols=$(python3 -I -c 'import re,sys; print(max(len(re.sub(r"\x1b\[[0-9;]*m","",l.rstrip("\n").rstrip())) for l in open(sys.argv[1])))' "$work/$variant.ansi")
+  rows=$(wc -l <"$work/$variant.ansi")
+  XDG_CONFIG_HOME="$work/tf" termframe --theme "kanagawa-$variant" --mode "$mode" \
+    --window=false --window-shadow=false --window-margin 0 --padding 1.5 \
+    --font-family "$font" --font-size 16 --line-height 1.4 \
+    --width "$cols" --height "$((rows + 1))" --timeout 20 \
+    --output "$work/$variant.svg" -- cat "$work/$variant.ansi"
+  rsvg-convert --zoom 3 "$work/$variant.svg" -o "$root/assets/screenshots/$variant.png"
 done
