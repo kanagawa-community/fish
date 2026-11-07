@@ -5,7 +5,7 @@
 # short session, captures the pane with its colors, recolors the 16 terminal
 # colors from the shared palette and renders the result with freeze.
 #
-# Requires: fish, tmux, eza, freeze, python3, curl, and the FiraCode Nerd Font.
+# Requires: fish, tmux, eza, freeze, rsync, python3, curl, and the FiraCode Nerd Font.
 # Follows https://github.com/kanagawa-community/.github/blob/main/PREVIEWS.md
 set -euo pipefail
 
@@ -19,13 +19,13 @@ if [[ $palette == http* ]]; then curl -fsSL "$palette" -o "$work/palette.json"; 
 mkdir -p "$root/assets/screenshots" "$work/xdg/fish/themes"
 cp "$root"/themes/*.theme "$work/xdg/fish/themes/"
 
-# A fixed home directory, so every run draws the same listing.
-demo="$work/home/kanagawa-community/fish"
-mkdir -p "$demo"/{.git,assets,themes}
-printf x >"$demo/.editorconfig"
-head -c 1100 /dev/zero | tr '\0' x >"$demo/LICENSE"
-head -c 2800 /dev/zero | tr '\0' x >"$demo/README.md"
-touch -d '2026-11-07 11:13' "$demo"/{.git,assets,themes,.editorconfig,LICENSE,README.md}
+# The listing shows this repository's own files. They are copied into a fixed
+# home directory with one timestamp, so only the file names and sizes change.
+demo="$work/home/kanagawa-community/$(basename "$root")"
+mkdir -p "$demo"
+rsync -a --exclude=.git "$root"/ "$demo"/
+mkdir "$demo/.git"
+find "$demo" -exec touch -h -d '2026-11-07 11:13' {} +
 
 send() {
   tmux -L kanagawa-preview send-keys -t s -l "$1"
@@ -47,7 +47,7 @@ PY
     "fish --no-config -C 'source $root/scripts/fixtures/prompt.fish; fish_config theme choose \"Kanagawa ${variant^}\" >/dev/null; clear'"
   sleep 1.5
   send 'colors'
-  send 'cd kanagawa-community/fish'
+  send "cd kanagawa-community/$(basename "$root")"
   send 'eza -alF --icons --group-directories-first --no-user'
   send 'nosuchcommand --flag' noenter
   tmux -L kanagawa-preview capture-pane -p -e -t s \
