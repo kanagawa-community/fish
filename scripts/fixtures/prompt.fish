@@ -2,11 +2,11 @@
 set -g fish_prompt_pwd_dir_length 0
 function fish_prompt
     set_color $fish_color_user
-    printf hokusai
+    printf kanagawa
     set_color $fish_color_normal
     printf @
     set_color $fish_color_host
-    printf kanagawa
+    printf %s $PREVIEW_VARIANT
     set_color $fish_color_normal
     printf ' '
     set_color $fish_color_cwd

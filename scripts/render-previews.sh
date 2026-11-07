@@ -43,7 +43,7 @@ for variant in wave dragon lotus; do
   tmux -L kanagawa-preview kill-server 2>/dev/null || true
   tmux -L kanagawa-preview new-session -d -s s -x 100 -y 30 -c "$demo" \
     -e XDG_CONFIG_HOME="$work/xdg" -e HOME="$work/home" -e COLORTERM=truecolor \
-    -e TERM=xterm-256color -e LC_ALL=C \
+    -e TERM=xterm-256color -e LC_ALL=C -e PREVIEW_VARIANT="$variant" \
     "fish --no-config -C 'source $root/scripts/fixtures/prompt.fish; fish_config theme choose kanagawa-$variant >/dev/null; clear'"
   sleep 1.5
   send 'fastfetch -l none -s colors'
