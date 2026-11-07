@@ -35,6 +35,12 @@ sets one fish color variable to a palette color, chosen by role. The README list
 the mapping. To try a change, copy the files to `~/.config/fish/themes/` and run
 `fish_config theme choose "Kanagawa Wave"` (or Dragon, Lotus) in a new shell.
 
+The images in `assets/screenshots/` are rendered, not captured by hand. After
+changing a theme, run `scripts/render-previews.sh` and commit the new images. It
+needs `fish`, `tmux`, `eza`, [freeze](https://github.com/charmbracelet/freeze)
+and the FiraCode Nerd Font. See the
+[preview standard](https://github.com/kanagawa-community/.github/blob/main/PREVIEWS.md).
+
 ## Pull requests
 
 - Keep each pull request to one change, and include a screenshot of each variant

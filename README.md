@@ -32,7 +32,22 @@
 <br clear="both">
 <br>
 
-<!-- TODO: add assets/screenshots/{wave,dragon,lotus}.png and restore the Previews section from the template before adoption. -->
+## Previews
+
+<details>
+<summary>🌊 Wave</summary>
+<img src="assets/screenshots/wave.png" alt="Screenshot of fish using Kanagawa Wave">
+</details>
+
+<details>
+<summary>🐉 Dragon</summary>
+<img src="assets/screenshots/dragon.png" alt="Screenshot of fish using Kanagawa Dragon">
+</details>
+
+<details>
+<summary>🪷 Lotus</summary>
+<img src="assets/screenshots/lotus.png" alt="Screenshot of fish using Kanagawa Lotus">
+</details>
 
 ## Requirements
 
