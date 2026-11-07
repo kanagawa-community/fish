@@ -55,15 +55,22 @@
 
 ## Installation
 
-Copy the theme files into your fish themes folder:
+With [Fisher](https://github.com/jorgebucaran/fisher):
+
+```fish
+fisher install kanagawa-community/fish
+```
+
+Without a plugin manager, download the three themes into your fish themes folder:
 
 ```fish
 mkdir -p ~/.config/fish/themes
-curl -L -o ~/.config/fish/themes/kanagawa-wave.theme https://raw.githubusercontent.com/kanagawa-community/fish/main/themes/kanagawa-wave.theme
+for variant in wave dragon lotus
+    curl -fsSL -o ~/.config/fish/themes/kanagawa-$variant.theme https://raw.githubusercontent.com/kanagawa-community/fish/main/themes/kanagawa-$variant.theme
+end
 ```
 
-Repeat for `kanagawa-dragon.theme` and `kanagawa-lotus.theme`, or clone the
-repository and copy everything in `themes/`.
+You can also clone the repository and copy everything in `themes/`.
 
 ## Usage
 
