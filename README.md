@@ -34,6 +34,8 @@
 
 ## Previews
 
+![Terminal windows showing fish with Kanagawa Lotus, Dragon and Wave](assets/showcase.png)
+
 <details>
 <summary>🌊 Wave</summary>
 <img src="assets/screenshots/wave.png" alt="Screenshot of fish using Kanagawa Wave">
