@@ -35,11 +35,18 @@ sets one fish color variable to a palette color, chosen by role. The README list
 the mapping. To try a change, copy the files to `~/.config/fish/themes/` and run
 `fish_config theme choose kanagawa-wave` (or `kanagawa-dragon`, `kanagawa-lotus`) in a new shell.
 
-The images in `assets/screenshots/` are rendered, not captured by hand. After
-changing a theme, run `scripts/render-previews.sh` and commit the new images. It
-needs `fish`, `tmux`, `eza`, `fastfetch`, `rsync`, `rsvg-convert`, `magick`,
-[termframe](https://github.com/pamburus/termframe) and the FiraCode Nerd Font. See the
-[preview standard](https://github.com/kanagawa-community/.github/blob/main/docs/PREVIEWS.md).
+The images in `assets/` are rendered, not captured by hand. After changing a
+theme, run this from the repository root and commit the new images:
+
+```sh
+bash <(curl -fsSL https://raw.githubusercontent.com/kanagawa-community/.github/main/scripts/render-previews.sh)
+```
+
+It fetches the shared preview scripts from the
+[.github repository](https://github.com/kanagawa-community/.github). `scripts/preview.sh` holds the fish-specific part
+and needs `fish`, `tmux`, `eza`, `fastfetch` and `rsync`. See the
+[preview standard](https://github.com/kanagawa-community/.github/blob/main/docs/PREVIEWS.md)
+for the rest.
 
 ## Pull requests
 
