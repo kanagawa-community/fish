@@ -1,5 +1,8 @@
 name: Release
 
+# Releases are prepared by a maintainer with scripts/release.sh in the
+# organization .github repository, which opens a pull request that updates
+# CHANGELOG.md. Merging it publishes the release here.
 on:
   push:
     branches: [main]
@@ -16,44 +19,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-
-      - uses: cocogitto/cocogitto-action@52d0023b4396897f1815648e553db2ab8d782f3a # v4.2.0
-        with:
-          install-only: true
 
       - name: Tag and publish release
         env:
           GH_TOKEN: ${{ github.token }}
+          MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          # Without a baseline tag cog would release 0.1.0 from the whole history.
-          # The baseline is created when the port is adopted.
-          if [ -z "$(git tag --list)" ]; then
-            echo "No baseline tag yet, so no release is made."
+          # Only the merge commit of a release pull request publishes a release.
+          subject="$(printf '%s\n' "$MESSAGE" | head -n1)"
+          pattern='^chore\(release\): ([0-9]+\.[0-9]+\.[0-9]+)( \(#[0-9]+\))?$'
+          if [[ ! "$subject" =~ $pattern ]]; then
+            echo "Not a release commit, so there is nothing to publish."
+            exit 0
+          fi
+          version="${BASH_REMATCH[1]}"
+
+          # A re-run after a release finds the tag already in place.
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$version" >/dev/null 2>&1; then
+            echo "$version is already released."
             exit 0
           fi
 
-          # A re-run after a release finds HEAD already on the new tag, where cog
-          # reports an error instead of "nothing to do".
-          if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
-            echo "HEAD is already tagged, so there is nothing to release."
-            exit 0
-          fi
-
-          # A cog error must fail the job instead of looking like "nothing to do".
-          if ! out="$(cog bump --auto --dry-run 2>&1)"; then
-            echo "$out"
+          # The release notes are this version's section of CHANGELOG.md.
+          notes="$(awk -v v="$version" '/^## /{ if (found) exit; if (index($0, "[" v "]")) found=1 } found' CHANGELOG.md | tail -n +2)"
+          if [ -z "$notes" ]; then
+            echo "CHANGELOG.md has no section for $version."
             exit 1
           fi
-          next="$(printf '%s\n' "$out" | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | head -n1 || true)"
-          if [ -z "$next" ]; then
-            echo "No commits since the last tag require a new version."
-            exit 0
-          fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          cog bump --auto
-          git push origin "refs/tags/$next"
-          gh release create "$next" --title "$next" --notes "$(cog changelog --at "$next")"
+          # Creating the release also creates the tag, on the merge commit.
+          gh release create "$version" --target "$GITHUB_SHA" --title "$version" --notes "$notes"
