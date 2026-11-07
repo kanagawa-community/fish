@@ -13,7 +13,7 @@ set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
 palette=${PALETTE_JSON:-https://raw.githubusercontent.com/kanagawa-community/.github/main/palette.json}
-font=${PREVIEW_FONT:-FiraCode Nerd Font Mono}
+font=${PREVIEW_FONT:-FiraCode Nerd Font}
 work=$(mktemp -d)
 trap 'tmux -L kanagawa-preview kill-server 2>/dev/null || true; rm -rf "$work"' EXIT
 
@@ -41,14 +41,16 @@ for variant in wave dragon lotus; do
     >"$work/tf/termframe/themes/kanagawa-$variant.toml"
   mode=dark; [[ $variant == lotus ]] && mode=light
   tmux -L kanagawa-preview kill-server 2>/dev/null || true
-  tmux -L kanagawa-preview new-session -d -s s -x 100 -y 30 -c "$demo" \
+  tmux -L kanagawa-preview new-session -d -s s -x 100 -y 34 -c "$demo" \
     -e XDG_CONFIG_HOME="$work/xdg" -e HOME="$work/home" -e COLORTERM=truecolor \
     -e TERM=xterm-256color -e LC_ALL=C -e PREVIEW_VARIANT="$variant" \
     "fish --no-config -C 'source $root/scripts/fixtures/prompt.fish; fish_config theme choose kanagawa-$variant >/dev/null; clear'"
   sleep 1.5
   send 'fastfetch -l none -s colors'
-  send "fish_config theme show current"
+  send 'echo "Hi, $USER" '"'"'from'"'"' $(basename $PWD) | tr A-Z a-z && ls *.md > /dev/null || echo no # comment'
   send 'eza -alF --icons --group-directories-first --no-user'
+  send 'nosuchcommand --flag'
+  send 'fastfetch ' noenter
   tmux -L kanagawa-preview capture-pane -p -e -t s \
     | sed -e :a -e '/^[[:space:]]*$/{$d;N;ba' -e '}' >"$work/$variant.ansi"
   cols=$(python3 -I -c 'import re,sys; print(max(len(re.sub(r"\x1b\[[0-9;]*m","",l.rstrip("\n").rstrip())) for l in open(sys.argv[1])))' "$work/$variant.ansi")
