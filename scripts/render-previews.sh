@@ -48,7 +48,7 @@ PY
   sleep 1.5
   send 'colors'
   send 'cd kanagawa-community/fish'
-  send 'eza --all --long --group-directories-first --color=always --icons=always --no-user'
+  send 'eza -alF --icons --no-user'
   send 'nosuchcommand --flag' noenter
   tmux -L kanagawa-preview capture-pane -p -e -t s \
     | python3 -I "$root/scripts/ansi16.py" "$work/palette.json" "$variant" \
