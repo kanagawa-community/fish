@@ -8,7 +8,7 @@
 #
 # Requires: fish, tmux, eza, fastfetch, termframe, rsvg-convert, rsync, python3, curl, and
 # the FiraCode Nerd Font.
-# Follows https://github.com/kanagawa-community/.github/blob/main/PREVIEWS.md
+# Follows https://github.com/kanagawa-community/.github/blob/main/docs/PREVIEWS.md
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)

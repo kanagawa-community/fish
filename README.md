@@ -81,7 +81,7 @@ across sessions, run `fish_config theme save kanagawa-wave`.
 ## Palette
 
 Every color comes from the shared
-[palette](https://github.com/kanagawa-community/.github/blob/main/PALETTE.md),
+[palette](https://github.com/kanagawa-community/.github/blob/main/docs/PALETTE.md),
 picked by role, so each variant uses its own value for the same role.
 
 | fish variable                                                                          | Palette role    |
