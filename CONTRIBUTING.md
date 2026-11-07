@@ -33,7 +33,7 @@ To read the colors from a script, use the machine-readable
 The themes in `themes/` are plain fish theme files, one per variant. Each line
 sets one fish color variable to a palette color, chosen by role. The README lists
 the mapping. To try a change, copy the files to `~/.config/fish/themes/` and run
-`fish_config theme choose "Kanagawa Wave"` (or Dragon, Lotus) in a new shell.
+`fish_config theme choose kanagawa-wave` (or `kanagawa-dragon`, `kanagawa-lotus`) in a new shell.
 
 The images in `assets/screenshots/` are rendered, not captured by hand. After
 changing a theme, run `scripts/render-previews.sh` and commit the new images. It

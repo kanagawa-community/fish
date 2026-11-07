@@ -59,10 +59,10 @@ Copy the theme files into your fish themes folder:
 
 ```fish
 mkdir -p ~/.config/fish/themes
-curl -L -o ~/.config/fish/themes/"Kanagawa Wave.theme" https://raw.githubusercontent.com/kanagawa-community/fish/main/themes/Kanagawa%20Wave.theme
+curl -L -o ~/.config/fish/themes/kanagawa-wave.theme https://raw.githubusercontent.com/kanagawa-community/fish/main/themes/kanagawa-wave.theme
 ```
 
-Repeat for `Kanagawa Dragon.theme` and `Kanagawa Lotus.theme`, or clone the
+Repeat for `kanagawa-dragon.theme` and `kanagawa-lotus.theme`, or clone the
 repository and copy everything in `themes/`.
 
 ## Usage
@@ -70,13 +70,13 @@ repository and copy everything in `themes/`.
 Pick a variant:
 
 ```fish
-fish_config theme choose "Kanagawa Wave"
+fish_config theme choose kanagawa-wave
 ```
 
-Use `"Kanagawa Dragon"` or `"Kanagawa Lotus"` for the other variants. `fish_config`
+Use `kanagawa-dragon` or `kanagawa-lotus` for the other variants. `fish_config`
 also lists the themes in its web interface (`fish_config`, then the Colors tab).
 Choosing a theme sets fish's color variables for the current session. To keep it
-across sessions, run `fish_config theme save "Kanagawa Wave"`.
+across sessions, run `fish_config theme save kanagawa-wave`.
 
 ## Palette
 
