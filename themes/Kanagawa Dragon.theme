@@ -17,7 +17,7 @@ fish_color_search_match --background=2d4f67
 fish_color_operator c4746e
 fish_color_escape 949fb5
 fish_color_autosuggestion 737c73
-fish_color_valid_path c5c9c5 --underline
+fish_color_valid_path --underline
 fish_color_cwd 8ea4a2
 fish_color_user 8a9a7b
 fish_color_host 8ba4b0
