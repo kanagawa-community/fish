@@ -18,10 +18,3 @@ function fish_right_prompt
 end
 function fish_greeting
 end
-function colors
-    for i in 1 2 3 4 5 6
-        printf '\e[38;5;%dm● ' $i
-    end
-    set_color normal
-    echo
-end

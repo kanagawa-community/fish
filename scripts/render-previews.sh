@@ -6,7 +6,7 @@
 # the capture with a theme built from the shared palette (background, foreground
 # and the 16 terminal colors), and rsvg-convert turns the SVG into a PNG.
 #
-# Requires: fish, tmux, eza, termframe, rsvg-convert, rsync, python3, curl, and
+# Requires: fish, tmux, eza, fastfetch, termframe, rsvg-convert, rsync, python3, curl, and
 # the FiraCode Nerd Font.
 # Follows https://github.com/kanagawa-community/.github/blob/main/PREVIEWS.md
 set -euo pipefail
@@ -46,7 +46,7 @@ for variant in wave dragon lotus; do
     -e TERM=xterm-256color -e LC_ALL=C \
     "fish --no-config -C 'source $root/scripts/fixtures/prompt.fish; fish_config theme choose \"Kanagawa ${variant^}\" >/dev/null; clear'"
   sleep 1.5
-  send 'colors'
+  send 'fastfetch -l none -s colors'
   send "cd kanagawa-community/$(basename "$root")"
   send 'eza -alF --icons --group-directories-first --no-user'
   send 'nosuchcommand --flag' noenter
